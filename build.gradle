@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+group = 'dev.rocketsheep'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'libraries'
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    // Libraries
+    compileOnly ':HytaleServer'
+    
+    // Tests
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'dev.rocketsheep.plugin.AreaDeposit'
+        )
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
