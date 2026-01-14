@@ -1,0 +1,84 @@
+{
+  "TranslationProperties": {
+    "Name": "items.RocketSheep_AreaDeposit_Depositor.name",
+    "Description": "items.RocketSheep_AreaDeposit_Depositor.description"
+  },
+  "Icon": "Icons/ItemsGenerated/RocketSheep_AreaDeposit_Depositor.png",
+  "Categories": ["Furniture.Benches"],
+  "Recipe": {
+    "Input": [
+      {
+        "ResourceTypeId": "Wood_Trunk",
+        "Quantity": 4
+      },
+      {
+        "ResourceTypeId": "Rock",
+        "Quantity": 4
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "RocketSheep_AreaDeposit_Depositor"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Categories": ["Workbench_Crafting"],
+        "Id": "Workbench"
+      }
+    ],
+    "TimeSeconds": 3.0
+  },
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/RocketSheep_AreaDeposit_Depositor.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/RocketSheep_AreaDeposit_Depositor_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "State": {
+      "Id": "areaDepositor",
+      "Definitions": {
+        "Activating": {
+          "Looping": false,
+          "CustomModelAnimation": "Blocks/RocketSheep_AreaDeposit_Depositor_Activate.blockyanim"
+        }
+      }
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Benches"
+      }
+    },
+    "HitboxType": "RocketSheep_AreaDeposit_Depositor",
+    "BlockParticleSetId": "Stone",
+    "ParticleColor": "#8B7355",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "BlockSoundSetId": "Stone",
+    "Interactions": {
+      "Use": "Custom"
+    }
+  },
+  "PlayerAnimationsId": "Block",
+  "IconProperties": {
+    "Scale": 0.4,
+    "Rotation": [22.5, 45.0, 22.5],
+    "Translation": [12.0, -15.0]
+  },
+  "Tags": {
+    "Type": ["Bench"]
+  },
+  "MaxStack": 8
+}
