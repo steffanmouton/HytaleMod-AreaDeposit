@@ -1,7 +1,7 @@
 {
   "TranslationProperties": {
     "Name": "Area Depositor",
-    "Description": "Deposits items into nearby chests using Quick Stack logic."
+    "Description": "<p>Deposits items into nearby chests (8 block radius) using Quick Stack logic.</p>"
   },
   "Recipe": {
     "Input": [
@@ -50,7 +50,13 @@
     },
     "State": {
       "Id": "container",
-      "Capacity": 1
+      "Capacity": 1,
+      "Definitions": {
+        "Activated": {
+          "CustomModelAnimation": "Blocks/Area_Deposit_Activation.blockyanim",
+          "Looping": false
+        }
+      }
     },
     "Interactions": {
       "Use": "Open_Container"
