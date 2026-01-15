@@ -16,5 +16,6 @@
   "LoadBefore": {},
   "DisabledByDefault": false,
   "IncludesAssetPack": false,
+  "Main": "dev.rocketsheep.plugin.AreaDeposit",
   "SubPlugins": []
 }

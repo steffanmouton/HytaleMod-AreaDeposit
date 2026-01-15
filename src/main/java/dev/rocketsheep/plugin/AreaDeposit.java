@@ -1,10 +1,11 @@
 package dev.rocketsheep.plugin;
 
-import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
+import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.rocketsheep.plugin.commands.AreaDepositCommand;
-import dev.rocketsheep.plugin.listeners.BlockUseListener;
+import dev.rocketsheep.plugin.systems.AreaDepositorEventSystem;
 
 import javax.annotation.Nonnull;
 
@@ -30,10 +31,18 @@ public class AreaDeposit extends JavaPlugin {
         // Register the /ad command
         this.getCommandRegistry().registerCommand(new AreaDepositCommand());
 
-        // Register the block use event listener for the Area Depositor block
+        // Register the UseBlockEvent.Pre system for the Area Depositor block
+        this.getEntityStoreRegistry().registerSystem(new AreaDepositorEventSystem());
+    }
+
+    @Override
+    protected void start() {
+        // TEST: Register connect event to verify event system works
         this.getEventRegistry().registerGlobal(
-            UseBlockEvent.Pre.class,
-            BlockUseListener::onBlockUse
+            PlayerConnectEvent.class,
+            event -> {
+                event.getPlayer().sendMessage(Message.raw("[AreaDeposit] Event system working!"));
+            }
         );
     }
 }

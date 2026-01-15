@@ -45,6 +45,16 @@
       }
     ],
     "VariantRotation": "NESW",
+    "Flags": {
+      "IsUsable": true
+    },
+    "State": {
+      "Id": "container",
+      "Capacity": 1
+    },
+    "Interactions": {
+      "Use": "Open_Container"
+    },
     "Gathering": {
       "Breaking": {
         "GatherType": "Benches"
