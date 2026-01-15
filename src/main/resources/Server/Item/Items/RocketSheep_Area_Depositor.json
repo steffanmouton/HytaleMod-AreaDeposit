@@ -1,17 +1,16 @@
 {
   "TranslationProperties": {
     "Name": "Area Depositor",
-    "Description": "<p>Deposits items into nearby chests (8 block radius) using Quick Stack logic.</p>"
+    "Description": "Deposits items into nearby chests (8 block radius) using Quick Stack logic."
   },
   "Recipe": {
     "Input": [
       {
         "ItemId": "Ingredient_Bar_Copper",
-        "Quantity": 4,
-        "ResourceTypeId": ""
+        "Quantity": 4
       },
       {
-        "ResourceTypeId": "Wood_Lightwood_Softwood",
+        "ResourceTypeId": "Wood_Trunk",
         "Quantity": 3
       }
     ],
