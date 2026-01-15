@@ -13,7 +13,7 @@ import dev.rocketsheep.plugin.AreaDepositService;
  */
 public class BlockUseListener {
 
-    private static final String DEPOSITOR_BLOCK_ID = "RocketSheep_AreaDeposit_Depositor";
+    private static final String DEPOSITOR_BLOCK_ID = "RocketSheep_Area_Depositor";
     private static final double DEFAULT_RADIUS = 8.0;
 
     /**
