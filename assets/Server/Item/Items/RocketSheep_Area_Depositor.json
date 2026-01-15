@@ -1,0 +1,79 @@
+{
+  "TranslationProperties": {
+    "Name": "Area Depositor",
+    "Description": "Deposits items into nearby chests using Quick Stack logic."
+  },
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Copper",
+        "Quantity": 4,
+        "ResourceTypeId": ""
+      },
+      {
+        "ResourceTypeId": "Wood_Lightwood_Softwood",
+        "Quantity": 3
+      }
+    ],
+    "Output": [
+      {
+        "ItemId": "RocketSheep_Area_Depositor"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Id": "Workbench",
+        "Categories": [
+          "Workbench_Tinkering"
+        ],
+        "TimeSeconds": 3.0
+      }
+    ]
+  },
+  "Categories": [
+    "Furniture.Benches"
+  ],
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/AreaDepositor.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/T_Area_Depositor.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Benches"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "ParticleColor": "#8B7355",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "BlockSoundSetId": "Stone"
+  },
+  "Icon": "Icons/ItemsGenerated/RocketSheep_Area_Depositor.png",
+  "PlayerAnimationsId": "Block",
+  "MaxStack": 8,
+  "IconProperties": {
+    "Scale": 1.2,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      -1,
+      -7
+    ]
+  }
+}
