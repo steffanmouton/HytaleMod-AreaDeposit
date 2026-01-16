@@ -48,8 +48,7 @@
       "IsUsable": true
     },
     "State": {
-      "Id": "container",
-      "Capacity": 1,
+      "Id": "areaDepositor",
       "Definitions": {
         "Activated": {
           "CustomModelAnimation": "Blocks/Area_Deposit_Activation.blockyanim",
@@ -58,7 +57,7 @@
       }
     },
     "Interactions": {
-      "Use": "Open_Container"
+      "Use": "Activate_Area_Depositor"
     },
     "Gathering": {
       "Breaking": {
