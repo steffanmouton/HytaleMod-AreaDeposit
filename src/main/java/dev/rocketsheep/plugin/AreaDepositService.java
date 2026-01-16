@@ -201,7 +201,9 @@ public class AreaDepositService {
     }
 
     /**
-     * Finds all container blocks within the specified radius of a position.
+     * Finds all storage container blocks within the specified radius of a position.
+     * Excludes processing benches (furnaces, tanners, etc.) which have output containers
+     * but are not intended for item storage.
      *
      * @param world The world to search in
      * @param center The center position to search from
@@ -231,6 +233,13 @@ public class AreaDepositService {
 
                     // Check if it's a container block
                     if (blockState instanceof ItemContainerBlockState) {
+                        // Skip processing benches (furnaces, tanners, etc.)
+                        // These have output containers but aren't storage containers
+                        String blockTypeId = blockState.getBlockType().getId();
+                        if (blockTypeId.startsWith("Bench_")) {
+                            continue;
+                        }
+
                         ItemContainerBlockState containerState = (ItemContainerBlockState) blockState;
                         ItemContainer container = containerState.getItemContainer();
                         if (container != null) {

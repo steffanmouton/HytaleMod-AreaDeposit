@@ -9,6 +9,7 @@ import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
+import com.hypixel.hytale.server.core.modules.interaction.InteractionSimulationHandler;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.rocketsheep.plugin.AreaDepositService;
@@ -41,16 +42,47 @@ public class AreaDepositorEventSystem extends EntityEventSystem<EntityStore, Use
             return;
         }
 
-        // Get player from the interaction context
-        var entityRef = event.getContext().getEntity();
+        var context = event.getContext();
+
+        // Get the block position from the event
+        Vector3i eventTargetBlock = event.getTargetBlock();
+
+        // Debug: Log interaction info to help diagnose simulation detection
+        var interactionManager = context.getInteractionManager();
+
+        // Get player early for debug messages
+        var entityRef = context.getEntity();
+        Player debugPlayer = null;
+        if (entityRef != null && entityRef.isValid()) {
+            debugPlayer = (Player) store.getComponent(entityRef, Player.getComponentType());
+        }
+
+        System.out.println("[AreaDeposit DEBUG] UseBlockEvent.Pre for Area Depositor");
+
+        // Log InteractionContext info - simulated events use forProxyEntity()
+        System.out.println("[AreaDeposit DEBUG] Context class: " + context.getClass().getName());
+        System.out.println("[AreaDeposit DEBUG] Context fields:");
+        for (var field : context.getClass().getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+                var value = field.get(context);
+                System.out.println("[AreaDeposit DEBUG]   - " + field.getName() + ": " + value);
+            } catch (Exception e) {
+                System.out.println("[AreaDeposit DEBUG]   - " + field.getName() + ": (error reading)");
+            }
+        }
+
+        // Use the player we already got for debug (or get if debug was skipped)
         if (entityRef == null || !entityRef.isValid()) {
             return;
         }
 
-        Player player = (Player) store.getComponent(entityRef, Player.getComponentType());
+        Player player = debugPlayer;
         if (player == null) {
             return;
         }
+
+        Vector3d blockCenter = new Vector3d(eventTargetBlock.x + 0.5, eventTargetBlock.y + 0.5, eventTargetBlock.z + 0.5);
 
         // Get the world
         World world = store.getExternalData().getWorld();
@@ -58,11 +90,7 @@ public class AreaDepositorEventSystem extends EntityEventSystem<EntityStore, Use
             return;
         }
 
-        // Get the block position as the center for container search
-        Vector3i blockPos = event.getTargetBlock();
-        Vector3d centerPos = new Vector3d(blockPos.x + 0.5, blockPos.y + 0.5, blockPos.z + 0.5);
-
         // Execute the deposit logic centered on the block
-        AreaDepositService.executeDepositFromBlock(player, world, centerPos, DEFAULT_RADIUS);
+        AreaDepositService.executeDepositFromBlock(player, world, blockCenter, DEFAULT_RADIUS);
     }
 }
