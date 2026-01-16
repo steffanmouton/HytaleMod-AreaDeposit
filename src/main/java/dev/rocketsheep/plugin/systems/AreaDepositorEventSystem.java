@@ -5,6 +5,8 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
+import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -56,10 +58,11 @@ public class AreaDepositorEventSystem extends EntityEventSystem<EntityStore, Use
             return;
         }
 
-        // Execute the deposit logic with chat output
-        AreaDepositService.executeDepositWithStore(entityRef, store, world, DEFAULT_RADIUS);
+        // Get the block position as the center for container search
+        Vector3i blockPos = event.getTargetBlock();
+        Vector3d centerPos = new Vector3d(blockPos.x + 0.5, blockPos.y + 0.5, blockPos.z + 0.5);
 
-        // Cancel the default interaction (prevents container UI from opening)
-        event.setCancelled(true);
+        // Execute the deposit logic centered on the block
+        AreaDepositService.executeDepositFromBlock(player, world, centerPos, DEFAULT_RADIUS);
     }
 }
