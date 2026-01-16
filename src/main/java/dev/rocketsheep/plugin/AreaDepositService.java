@@ -128,6 +128,69 @@ public class AreaDepositService {
     }
 
     /**
+     * Executes the area deposit functionality centered on a block position.
+     * Used by the Area Depositor block.
+     *
+     * @param player The player whose inventory to deposit from
+     * @param world The world to search in
+     * @param blockCenter The center position (the block's position)
+     * @param radius The search radius in blocks
+     */
+    public static void executeDepositFromBlock(
+            Player player,
+            World world,
+            Vector3d blockCenter,
+            double radius) {
+
+        // Clamp radius
+        if (radius > MAX_RADIUS) {
+            radius = MAX_RADIUS;
+        }
+        if (radius < 1.0) {
+            radius = 1.0;
+        }
+
+        // Get player's inventory storage container
+        Inventory playerInventory = player.getInventory();
+        if (playerInventory == null) {
+            player.sendMessage(Message.raw("Error: Could not access inventory."));
+            return;
+        }
+        ItemContainer playerStorage = playerInventory.getStorage();
+
+        // Find all nearby container blocks centered on the block
+        List<ItemContainer> nearbyContainers = findNearbyContainers(world, blockCenter, radius);
+
+        if (nearbyContainers.isEmpty()) {
+            player.sendMessage(Message.raw("No containers found within " + (int) radius + " blocks."));
+            return;
+        }
+
+        // Execute quick stack to each container individually
+        int containersWithDeposits = 0;
+        int totalOperations = 0;
+
+        for (ItemContainer container : nearbyContainers) {
+            ListTransaction<?> transaction = playerStorage.quickStackTo(container);
+            if (transaction.succeeded() && transaction.size() > 0) {
+                containersWithDeposits++;
+                totalOperations += transaction.size();
+            }
+        }
+
+        // Report actual results
+        if (totalOperations > 0) {
+            player.sendMessage(Message.raw(
+                "Deposited items into " + containersWithDeposits + " container(s)."
+            ));
+        } else {
+            player.sendMessage(Message.raw(
+                "No matching items to deposit. Found " + nearbyContainers.size() + " container(s)."
+            ));
+        }
+    }
+
+    /**
      * Internal method to execute deposit when we don't have direct store access.
      */
     private static void executeDepositInternal(Ref<EntityStore> entityRef, double radius) {
