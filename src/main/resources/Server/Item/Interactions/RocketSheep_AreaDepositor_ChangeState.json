@@ -1,0 +1,8 @@
+{
+  "Type": "ChangeState",
+  "Changes": {
+    "default": "Activated1",
+    "Activated1": "Activated2",
+    "Activated2": "Activated1"
+  }
+}

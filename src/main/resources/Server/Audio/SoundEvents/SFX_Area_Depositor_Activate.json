@@ -1,0 +1,13 @@
+{
+  "Layers": [
+    {
+      "Files": [
+        "Sounds/Block/SFX_Area_Depositor_Activate.ogg"
+      ]
+    }
+  ],
+  "PreventSoundInterruption": false,
+  "MaxInstance": 5,
+  "Volume": 2.0,
+  "Parent": "SFX_Attn_Quiet"
+}

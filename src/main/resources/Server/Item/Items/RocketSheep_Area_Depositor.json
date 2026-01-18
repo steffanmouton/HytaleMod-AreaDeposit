@@ -50,7 +50,11 @@
     "State": {
       "Id": "areaDepositor",
       "Definitions": {
-        "Activated": {
+        "Activated1": {
+          "CustomModelAnimation": "Blocks/Area_Deposit_Activation.blockyanim",
+          "Looping": false
+        },
+        "Activated2": {
           "CustomModelAnimation": "Blocks/Area_Deposit_Activation.blockyanim",
           "Looping": false
         }
