@@ -51,10 +51,12 @@
       "Id": "areaDepositor",
       "Definitions": {
         "Activated1": {
+          "InteractionSoundEventId": "SFX_Area_Depositor_Activate",
           "CustomModelAnimation": "Blocks/Area_Deposit_Activation.blockyanim",
           "Looping": false
         },
         "Activated2": {
+          "InteractionSoundEventId": "SFX_Area_Depositor_Activate",
           "CustomModelAnimation": "Blocks/Area_Deposit_Activation.blockyanim",
           "Looping": false
         }
