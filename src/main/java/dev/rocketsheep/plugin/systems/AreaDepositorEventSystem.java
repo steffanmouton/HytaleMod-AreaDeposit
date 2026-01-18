@@ -10,6 +10,7 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.accessor.BlockAccessor;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.rocketsheep.plugin.AreaDepositService;
 
@@ -20,6 +21,7 @@ public class AreaDepositorEventSystem extends EntityEventSystem<EntityStore, Use
 
     private static final String DEPOSITOR_BLOCK_ID = "RocketSheep_Area_Depositor";
     private static final double DEFAULT_RADIUS = 8.0;
+    private static final String ACTIVATED_STATE = "Activated";
 
     public AreaDepositorEventSystem() {
         super(UseBlockEvent.Pre.class);
@@ -77,6 +79,19 @@ public class AreaDepositorEventSystem extends EntityEventSystem<EntityStore, Use
         }
 
         // Execute the deposit logic centered on the block
-        AreaDepositService.executeDepositFromBlock(player, world, blockCenter, DEFAULT_RADIUS);
+        int deposited = AreaDepositService.executeDepositFromBlock(player, store, world, blockCenter, DEFAULT_RADIUS);
+
+        // Trigger animation only if items were deposited
+        if (deposited > 0) {
+            BlockAccessor accessor = world.getChunkIfLoaded(
+                ((long) (blockPos.x >> 4) << 32) | ((blockPos.z >> 4) & 0xFFFFFFFFL)
+            );
+            if (accessor != null) {
+                var blockType = accessor.getBlockType(blockPos.x, blockPos.y, blockPos.z);
+                if (blockType != null) {
+                    accessor.setBlockInteractionState(blockPos, blockType, ACTIVATED_STATE);
+                }
+            }
+        }
     }
 }

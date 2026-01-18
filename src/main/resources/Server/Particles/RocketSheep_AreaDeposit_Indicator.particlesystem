@@ -1,0 +1,13 @@
+{
+  "Spawners": [
+    {
+      "SpawnerId": "RocketSheep_AreaDeposit_Indicator",
+      "PositionOffset": {
+        "X": 0.5,
+        "Y": 1.2,
+        "Z": 0.5
+      }
+    }
+  ],
+  "LifeSpan": 2.0
+}

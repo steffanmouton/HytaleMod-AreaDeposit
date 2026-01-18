@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.meta.BlockState;
 import com.hypixel.hytale.server.core.universe.world.meta.state.ItemContainerBlockState;
+import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -23,6 +24,11 @@ import java.util.List;
  * Used by both the /ad command and the Area Depositor block.
  */
 public class AreaDepositService {
+
+    /**
+     * Record holding a container and its block position.
+     */
+    public record ContainerInfo(ItemContainer container, int x, int y, int z) {}
 
     private static final double MAX_RADIUS = 32.0;
 
@@ -127,17 +133,22 @@ public class AreaDepositService {
         }
     }
 
+    private static final String PARTICLE_SYSTEM_ID = "RocketSheep_AreaDeposit_Indicator";
+
     /**
      * Executes the area deposit functionality centered on a block position.
      * Used by the Area Depositor block.
      *
      * @param player The player whose inventory to deposit from
+     * @param store The entity store (for spawning particles)
      * @param world The world to search in
      * @param blockCenter The center position (the block's position)
      * @param radius The search radius in blocks
+     * @return The number of deposit operations performed (0 if none)
      */
-    public static void executeDepositFromBlock(
+    public static int executeDepositFromBlock(
             Player player,
+            Store<EntityStore> store,
             World world,
             Vector3d blockCenter,
             double radius) {
@@ -154,24 +165,30 @@ public class AreaDepositService {
         Inventory playerInventory = player.getInventory();
         if (playerInventory == null) {
             player.sendMessage(Message.raw("Error: Could not access inventory."));
-            return;
+            return 0;
         }
         ItemContainer playerStorage = playerInventory.getStorage();
 
-        // Find all nearby container blocks centered on the block
-        List<ItemContainer> nearbyContainers = findNearbyContainers(world, blockCenter, radius);
+        // Find all nearby container blocks centered on the block (with positions)
+        List<ContainerInfo> nearbyContainers = findNearbyContainersWithPositions(world, blockCenter, radius);
 
         if (nearbyContainers.isEmpty()) {
             player.sendMessage(Message.raw("No containers found within " + (int) radius + " blocks."));
-            return;
+            return 0;
+        }
+
+        // Spawn particles above ALL containers in range
+        for (ContainerInfo info : nearbyContainers) {
+            Vector3d particlePos = new Vector3d(info.x(), info.y(), info.z());
+            ParticleUtil.spawnParticleEffect(PARTICLE_SYSTEM_ID, particlePos, store);
         }
 
         // Execute quick stack to each container individually
         int containersWithDeposits = 0;
         int totalOperations = 0;
 
-        for (ItemContainer container : nearbyContainers) {
-            ListTransaction<?> transaction = playerStorage.quickStackTo(container);
+        for (ContainerInfo info : nearbyContainers) {
+            ListTransaction<?> transaction = playerStorage.quickStackTo(info.container());
             if (transaction.succeeded() && transaction.size() > 0) {
                 containersWithDeposits++;
                 totalOperations += transaction.size();
@@ -188,6 +205,8 @@ public class AreaDepositService {
                 "No matching items to deposit. Found " + nearbyContainers.size() + " container(s)."
             ));
         }
+
+        return totalOperations;
     }
 
     /**
@@ -212,6 +231,25 @@ public class AreaDepositService {
      */
     public static List<ItemContainer> findNearbyContainers(World world, Vector3d center, double radius) {
         List<ItemContainer> containers = new ArrayList<>();
+        for (ContainerInfo info : findNearbyContainersWithPositions(world, center, radius)) {
+            containers.add(info.container());
+        }
+        return containers;
+    }
+
+    /**
+     * Finds all storage container blocks within the specified radius of a position,
+     * including their block positions.
+     * Excludes processing benches (furnaces, tanners, etc.) which have output containers
+     * but are not intended for item storage.
+     *
+     * @param world The world to search in
+     * @param center The center position to search from
+     * @param radius The search radius in blocks
+     * @return List of ContainerInfo objects containing containers and their positions
+     */
+    public static List<ContainerInfo> findNearbyContainersWithPositions(World world, Vector3d center, double radius) {
+        List<ContainerInfo> containers = new ArrayList<>();
 
         int centerX = (int) Math.floor(center.x);
         int centerY = (int) Math.floor(center.y);
@@ -243,7 +281,7 @@ public class AreaDepositService {
                         ItemContainerBlockState containerState = (ItemContainerBlockState) blockState;
                         ItemContainer container = containerState.getItemContainer();
                         if (container != null) {
-                            containers.add(container);
+                            containers.add(new ContainerInfo(container, x, y, z));
                         }
                     }
                 }

@@ -2,10 +2,11 @@ package dev.rocketsheep.plugin;
 
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.rocketsheep.plugin.commands.AreaDepositCommand;
-import dev.rocketsheep.plugin.systems.AreaDepositorEventSystem;
+import dev.rocketsheep.plugin.interaction.AreaDepositorInteraction;
 
 import javax.annotation.Nonnull;
 
@@ -31,8 +32,12 @@ public class AreaDeposit extends JavaPlugin {
         // Register the /ad command
         this.getCommandRegistry().registerCommand(new AreaDepositCommand());
 
-        // Register the UseBlockEvent.Pre system for the Area Depositor block
-        this.getEntityStoreRegistry().registerSystem(new AreaDepositorEventSystem());
+        // Register the custom interaction type for the Area Depositor block
+        this.getCodecRegistry(Interaction.CODEC).register(
+            "RocketSheep_AreaDepositor_Activate",
+            AreaDepositorInteraction.class,
+            AreaDepositorInteraction.CODEC
+        );
     }
 
     @Override

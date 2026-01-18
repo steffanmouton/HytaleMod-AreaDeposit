@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.client.SimpleBlockInteraction;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.accessor.BlockAccessor;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.rocketsheep.plugin.AreaDepositService;
 
@@ -24,6 +25,7 @@ public class AreaDepositorInteraction extends SimpleBlockInteraction {
         BuilderCodec.builder(AreaDepositorInteraction.class, AreaDepositorInteraction::new).build();
 
     private static final double DEFAULT_RADIUS = 8.0;
+    private static final String ACTIVATED_STATE = "Activated";
 
     @Override
     protected void interactWithBlock(World world, CommandBuffer<EntityStore> commandBuffer,
@@ -37,7 +39,20 @@ public class AreaDepositorInteraction extends SimpleBlockInteraction {
         if (player == null) return;
 
         Vector3d centerPos = new Vector3d(blockPos.x + 0.5, blockPos.y + 0.5, blockPos.z + 0.5);
-        AreaDepositService.executeDepositFromBlock(player, world, centerPos, DEFAULT_RADIUS);
+        int deposited = AreaDepositService.executeDepositFromBlock(player, store, world, centerPos, DEFAULT_RADIUS);
+
+        // Trigger animation only if items were deposited
+        if (deposited > 0) {
+            BlockAccessor accessor = world.getChunkIfLoaded(
+                ((long) (blockPos.x >> 4) << 32) | ((blockPos.z >> 4) & 0xFFFFFFFFL)
+            );
+            if (accessor != null) {
+                var blockType = accessor.getBlockType(blockPos.x, blockPos.y, blockPos.z);
+                if (blockType != null) {
+                    accessor.setBlockInteractionState(blockPos, blockType, ACTIVATED_STATE);
+                }
+            }
+        }
     }
 
     @Override

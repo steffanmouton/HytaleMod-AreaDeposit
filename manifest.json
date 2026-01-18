@@ -1,11 +1,11 @@
 {
   "Group": "dev.rocketsheep",
   "Name": "AreaDeposit",
-  "Version": "1.1.0",
+  "Version": "1.1.3",
   "Description": "Quickly deposits your items into nearby containers, if they have matching items. Same as the Quick Stack function that is on chests in vanilla Hytale. Includes the Area Depositor block for easy access.",
   "Authors": [
     {
-      "Name": "Steffan Mouton",
+      "Name": "RocketSheepDev-StefM",
       "Email": "smouton@rocketsheep.dev",
       "Url": "https://rocketsheep.dev"
     }
